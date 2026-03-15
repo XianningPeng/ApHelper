@@ -4,7 +4,7 @@ import streamlit as st
 from data import pieChart, accuracyByUnitChart, overallAccuracy
 from main import main
 from LLM import analyze
-import time
+
 
 
 st.title("AP Assistant")

@@ -2,9 +2,10 @@ import json
 from openai import OpenAI
 from data import accuracyByUnitChart
 from data import pieChart
+import streamlit as st
 
 client = OpenAI(
-    api_key="sk-22a25594955044a3b09b5a0850fd3ab0",
+    api_key= st.secrets["deepseekAPI"],
     base_url="https://api.deepseek.com")
 
 

@@ -3,11 +3,7 @@ from LLM import classification
 from datetime import datetime
 import json
 from data import overallAccuracy
-from data import accuracyByUnit
-from data import correctNumofQuestion
-from data import totalNumOfQuestionsByUnit
-from data import accuracyByUnitChart
-from data import pieChart
+
 
 def main(userName, question, correctAns, answer):
 
