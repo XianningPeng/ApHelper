@@ -6,7 +6,6 @@ from main import main
 from LLM import analyze
 
 
-
 st.title("AP Assistant")
 st.subheader("– a tool that can help you ace the exams!", divider= "gray")
 
@@ -51,7 +50,6 @@ if selection == "Input more questions":
 
 
 
-
 if selection == "Check history":
 
     st.divider()
@@ -75,13 +73,18 @@ if selection == "Check history":
     st.bar_chart(df, x="Unit", y="Frequency", x_label="Frequency(how many times they showed up in your questions)",
                  sort=False, horizontal=True)
 
+
+    if 'aiOverview' in st.session_state:
+        st.write(st.session_state.aiOverview)
+
     if st.button("**Check  out an** $AI Overview$"):
 
         with st.spinner("Wait for it...  It might take a while", show_time=True):
             content = analyze(userName)
-        st.write(content)
+        st.session_state['aiOverview'] = content
         st.divider()
-
+        st.write(st.session_state.aiOverview)
+        st.divider()
 
 
     # check and download history
@@ -89,6 +92,7 @@ if selection == "Check history":
     fileName = userName + ".json"
 
     if on:
+
         with open(fileName, "r") as f:
             file = json.load(f)
         jsonFile = json.dumps(file, indent=len(file))
