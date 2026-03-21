@@ -45,7 +45,6 @@ def classification (question):
     )
 
     data = json.loads(response.choices[0].message.content)
-
     return data.get("Unit")
 
 
@@ -55,7 +54,6 @@ def classification (question):
 def analyze(userName):
 
     fileName = userName + ".json"
-
 
     system_prompt = f"""  
     
@@ -70,9 +68,6 @@ def analyze(userName):
             You can also find how many questions he has finished with the units they belong to here: {pieChart(fileName)}
             
             according to there data, give the user an analysis and suggestion on future study.
-    
-    
-    
     """
 
     localQuestion = "according to the user's data, give the user an analysis and suggestion on future study. start with no introduction."

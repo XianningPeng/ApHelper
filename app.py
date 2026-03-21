@@ -1,9 +1,17 @@
 import json
 import os
+from platform import java_ver
 import streamlit as st
 from data import pieChart, accuracyByUnitChart, overallAccuracy
 from main import main
 from LLM import analyze
+from supabase import create_client, Client
+
+url: str = st.secrets["SUPABASE_URL"]
+key: str = st.secrets["SUPABASE_KEY"]
+supabase: Client = create_client(url, key)
+
+
 
 
 st.title("AP Assistant")
@@ -54,7 +62,9 @@ if selection == "Check history":
 
     st.divider()
 
-    if not os.path.isfile(userName +".json"):
+    try:
+        response = supabase.storage.from_("usersdata").download(userName +".json")
+    except:
         st.header("You don't have any history. Please input some questions first!")
         st.stop()
 
@@ -93,11 +103,10 @@ if selection == "Check history":
 
     if on:
 
-        with open(fileName, "r") as f:
-            file = json.load(f)
-        jsonFile = json.dumps(file, indent=len(file))
+        responseLocal = supabase.storage.from_("usersdata").download(fileName)  # get the file
+        jsonFile = json.loads(responseLocal)
 
-        st.download_button("Download the file", jsonFile, "my_questions.json")
-        st.dataframe(file)
+        st.download_button("Download the file", responseLocal, f"{userName}.json")
+        st.dataframe(jsonFile)
 
     selected = st.feedback("stars")

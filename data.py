@@ -1,4 +1,10 @@
 import pandas as pd
+import streamlit as st
+from supabase import create_client, Client
+
+url: str = st.secrets["SUPABASE_URL"]
+key: str = st.secrets["SUPABASE_KEY"]
+supabase: Client = create_client(url, key)
 
 units = [
     "1. Limits and Continuity",
@@ -14,22 +20,26 @@ units = [
 ]
 
 def overallAccuracy (fileName):
-    df = pd.read_json(fileName)
+    response = supabase.storage.from_("usersdata").download(fileName).decode('utf-8')
+    df = pd.read_json(response)
     overallaccuracy = df["is_correct"].mean()
     return overallaccuracy
 
 def accuracyByUnit (fileName):
-    df = pd.read_json(fileName)
+    response = supabase.storage.from_("usersdata").download(fileName).decode('utf-8')
+    df = pd.read_json(response)
     accuracy = df.groupby("unit")["is_correct"].mean()
     return accuracy
 
 def correctNumofQuestion (fileName):
-    df = pd.read_json(fileName)
+    response = supabase.storage.from_("usersdata").download(fileName).decode('utf-8')
+    df = pd.read_json(response)
     correctNumber = df.groupby(["is_correct", "unit"])["unit"].count()
     return correctNumber
 
 def totalNumOfQuestionsByUnit (fileName):
-    df = pd.read_json(fileName)
+    response = supabase.storage.from_("usersdata").download(fileName).decode('utf-8')
+    df = pd.read_json(response)
     totalNumber = df.groupby("unit")["unit"].count()
     return totalNumber
 
@@ -39,7 +49,9 @@ def totalNumOfQuestionsByUnit (fileName):
 # this function is being used to detect if there are some missing units
 def is_missing (fileNmae):
 
-    df = pd.read_json(fileNmae).groupby("unit")[["unit"]].count()   #df is a dataframe
+    response = supabase.storage.from_("usersdata").download(fileNmae).decode('utf-8')
+    df = pd.read_json(response).groupby("unit")[["unit"]].count()
+
     dict = df.to_dict()
 
     missing = []
@@ -49,6 +61,7 @@ def is_missing (fileNmae):
             missing.append(i)
 
     return missing
+
 
 
 #graph
@@ -66,8 +79,6 @@ def accuracyByUnitChart (fileName):
         'Unit': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         'Accuracy': accuracy
     }
-
-
     return data
 
 
@@ -89,61 +100,6 @@ def pieChart (fileName):
     }
     df = pd.DataFrame(data)
 
-
     return df
-
-
-
-
-
-
-
-# def accuracyByUnitChart (fileName):
-#     accuracy = accuracyByUnit(fileName).to_list()
-#
-#     if len(accuracy) != 10:
-#         missing = is_missing(fileName)
-#         missing.sort()         # this line is removable
-#
-#         for unit in missing:
-#             accuracy.insert(unit-1, 0)
-#
-#     data = {
-#         'Unit': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-#         'Accuracy': accuracy
-#     }
-#     df = pd.DataFrame(data)
-#
-#     plt.bar(df['Unit'], df['Accuracy'], color='skyblue')
-#     plt.xlabel("Unit")
-#     plt.ylabel("Accuracy")
-#     plt.title("Accuracy by Unit")
-#     plt.show()
-#     return
-
-
-
-
-# def pieChart (fileName):
-#
-#     Frequency = totalNumOfQuestionsByUnit(fileName).to_list()
-#
-#     if len(Frequency) != 10:
-#         missing = is_missing(fileName)
-#         missing.sort()  # this line is removable
-#
-#         for i in missing:
-#             Frequency.insert(i-1, 0)
-#
-#     data = {
-#         'Unit': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
-#         'Frequency': Frequency
-#     }
-#     df = pd.DataFrame(data)
-#
-#     plt.pie(df['Frequency'], labels=df['Unit'], autopct='%1.0f%%')
-#     plt.title("Number of Questions by Unit")
-#     plt.show()
-#     return
 
 
