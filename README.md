@@ -1,0 +1,1 @@
+A tool that helps students ace the AP exams. Via LLM API, the system can classify question types and calculate each unit’s accuracy, giving the user a holistic review of his current level and weak part(s). The system can also recommend personalized questions for practice.
