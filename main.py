@@ -14,7 +14,7 @@ supabase: Client = create_client(url, key)
 
 
 
-def main(userName, question, correctAns, answer):
+def main(userName, question, choiceA, choiceB, choiceC, choiceD, choiceE, correctAns, answer):
 
     is_correct = False
     if correctAns == answer:
@@ -23,6 +23,11 @@ def main(userName, question, correctAns, answer):
 
     question1 = {
         "text": question,
+        "choiceA": choiceA,
+        "choiceB": choiceB,
+        "choiceC": choiceC,
+        "choiceD": choiceD,
+        "choiceE": choiceE,
         "unit": classification(question),
         "correct answer": correctAns.upper(),
         "user's answer": answer.upper(),
@@ -34,7 +39,7 @@ def main(userName, question, correctAns, answer):
 
     try:
         responseLocal = supabase.storage.from_("usersdata").download(file_name)  # get the file
-        data = json.loads(responseLocal)  # not sure if it loads or load
+        data = json.loads(responseLocal)
         data.append(question1)
 
         json_str2 = json.dumps(data, indent=len(data)).encode('utf-8')

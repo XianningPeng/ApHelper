@@ -11,7 +11,7 @@ client = OpenAI(
 
 def classification (question):
     system_prompt = """
-
+    
         There are 10 different units in this course and its corresponding exam, (which are 1.Limits and Continuity; 
         2. Differentiation: Definition and Basic Derivative Rules; 3. Differentiation: Composite, Implicit, and Inverse Functions; 
         4.Contextual Applications of Differentiation; 5.Applying Derivatives to Analyze Functions; 6.Integration and Accumulation of Change; 
@@ -28,7 +28,7 @@ def classification (question):
         {
           "Unit": "10"
         }
-
+        
     """
 
     localQuestion = question
@@ -46,7 +46,6 @@ def classification (question):
 
     data = json.loads(response.choices[0].message.content)
     return data.get("Unit")
-
 
 
 
@@ -81,6 +80,8 @@ def analyze(userName):
     )
 
     return (response.choices[0].message.content)
+
+
 
 
 
