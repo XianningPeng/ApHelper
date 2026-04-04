@@ -59,5 +59,12 @@ if on:
     jsonFile = json.loads(responseLocal)
 
     st.download_button("Download the file", responseLocal, f"{userName}.json")
-    st.dataframe(jsonFile)
 
+    #display user's history question in
+    for i in range(len(jsonFile)):
+        st.divider()
+
+        st.markdown(f"### {jsonFile[i]['text']}")
+        for key, value in jsonFile[i].items():
+            if key != "text":
+                st.write(f"{key}: {value}")
