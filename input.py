@@ -71,8 +71,8 @@ for i in range(numberInput):
     questionInfo ={}
 
         # text": "",
-        #     "choiceA": "",
-        #     "choiceB": "",
+        # "choiceA": "",
+        # "choiceB": "",
         #     "choiceC": "",
         #     "choiceD": "",
         #     "choiceE": "",

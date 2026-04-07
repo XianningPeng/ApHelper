@@ -1,6 +1,6 @@
 import streamlit as st
 from supabase import create_client, Client
-from data import pieChart, accuracyByUnitChart, overallAccuracy, count
+from data import pieChart, accuracyByUnitChart, overallAccuracy, count,accuracyByTime
 from LLM import analyze
 import json
 import os
@@ -42,6 +42,10 @@ with col2:
 st.divider()
 # number of questions finished by week
 count(userName+".json")
+
+st.divider()
+
+accuracyByTime()
 
 st.divider()
 

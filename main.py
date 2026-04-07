@@ -32,6 +32,8 @@ def main(userName, question, choiceA, choiceB, choiceC, choiceD, choiceE, correc
         "correct answer": correctAns.upper(),
         "user's answer": answer.upper(),
         "is_correct": is_correct,
+        "week": datetime.now().isocalender().week,
+        "year": datetime.now().isocalendar().year,
         "time": datetime.now().isoformat()
     }
     file_name = userName + ".json"
@@ -67,33 +69,5 @@ def main(userName, question, choiceA, choiceB, choiceC, choiceD, choiceE, correc
 
 
     return overallAccuracy(file_name)
-
-
-
-
-
-    # if os.path.isfile(file_name):
-    #
-    #     # deserialization
-    #     # change it to a list or dictionary
-    #     # append
-    #     # serialization
-    #
-    #     with open(file_name, "r") as f:
-    #         data = json.load(f)
-    #     data.append(question1)
-    #
-    #     json_str2 = json.dumps(data, indent=len(data))
-    #     with open(file_name, "w") as f:
-    #         f.write(json_str2)
-    #
-    # else:
-    #     theList = [question1]
-    #     json_str = json.dumps(theList, indent=1)
-    #     with open(file_name, "w") as f:
-    #         f.write(json_str)
-
-
-
 
 

@@ -175,3 +175,55 @@ def count(fileName):
     except:
         st.write("No Data")
 
+def accuracyByTime():
+    df = st.session_state.df
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        option_Year = st.selectbox(
+            " ",
+            ("2026", "2025"),
+            placeholder="pick a year",
+        )
+
+    with col2:
+        option_Unit = st.selectbox(
+            "choose a unit",
+            ("1", "2", "3", "4", "5", "6", "7", "8", "9", "10"),
+            index=None,
+            placeholder="pick a unit",
+        )
+
+    filtered_df = df[df["year"] == int(option_Year)]
+
+    if option_Unit is not None:
+        filtered_df = filtered_df[filtered_df["unit"] == int(option_Unit)]
+
+    filtered_df = filtered_df.groupby(["week"])["is_correct"].mean()
+    dictNum = filtered_df.to_dict()
+
+    try:
+        start = next(iter(dictNum))
+        if int(option_Year) == datetime.now().isocalendar().year:
+            end = datetime.now().isocalendar().week
+        else:
+            end = 52
+
+        week = []
+        accuracy = []
+        for i in range(start, end + 1):
+            week.append(i)
+            try:
+                accuracy.append(dictNum[i])
+            except:
+                accuracy.append(0)
+
+        data = {
+            "week": week,
+            "accuracy": accuracy
+        }
+
+        st.line_chart(data, x="week", y="accuracy")
+    except:
+        st.write("No Data")
