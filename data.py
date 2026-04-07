@@ -1,6 +1,8 @@
 import pandas as pd
 import streamlit as st
 from supabase import create_client, Client
+from datetime import datetime
+
 
 url: str = st.secrets["SUPABASE_URL"]
 key: str = st.secrets["SUPABASE_KEY"]
@@ -19,38 +21,50 @@ units = [
     "10. Infinite Sequences and Series"
 ]
 
+
+
+
+
+
+
+
+
 def overallAccuracy (fileName):
-    response = supabase.storage.from_("usersdata").download(fileName).decode('utf-8')
-    df = pd.read_json(response)
+
+    #initialization
+    if "df" not in st.session_state:
+        userName = st.session_state.userName
+        fileName = userName + ".json"
+        response = supabase.storage.from_("usersdata").download(fileName).decode('utf-8')
+        st.session_state.df = pd.read_json(response)
+
+    df = st.session_state.df
     overallaccuracy = df["is_correct"].mean()
     return overallaccuracy
 
 def accuracyByUnit (fileName):
-    response = supabase.storage.from_("usersdata").download(fileName).decode('utf-8')
-    df = pd.read_json(response)
+    df = st.session_state.df
     accuracy = df.groupby("unit")["is_correct"].mean()
     return accuracy
 
 def correctNumofQuestion (fileName):
-    response = supabase.storage.from_("usersdata").download(fileName).decode('utf-8')
-    df = pd.read_json(response)
+    df = st.session_state.df
     correctNumber = df.groupby(["is_correct", "unit"])["unit"].count()
     return correctNumber
 
 def totalNumOfQuestionsByUnit (fileName):
-    response = supabase.storage.from_("usersdata").download(fileName).decode('utf-8')
-    df = pd.read_json(response)
+    df = st.session_state.df
     totalNumber = df.groupby("unit")["unit"].count()
     return totalNumber
 
 
 
 
-# this function is being used to detect if there are some missing units
+# handle missing data
 def is_missing (fileNmae):
 
     response = supabase.storage.from_("usersdata").download(fileNmae).decode('utf-8')
-    df = pd.read_json(response).groupby("unit")[["unit"]].count()
+    df = st.session_state.df.groupby("unit")[["unit"]].count()
 
     dict = df.to_dict()
 
@@ -102,4 +116,62 @@ def pieChart (fileName):
 
     return df
 
+
+
+# number of questions by week
+def count(fileName):
+
+    df = st.session_state.df
+
+
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        option_Year = st.selectbox(
+            "pick a year",
+            ("2026", "2025"),
+            placeholder="pick a year",
+        )
+
+    with col2:
+        option_Unit = st.selectbox(
+            "pick a unit",
+            ("1", "2", "3", "4", "5", "6", "7", "8", "9", "10"),
+            index=None,
+            placeholder="pick a unit",
+        )
+
+    filtered_df = df[df["year"] == int(option_Year)]
+
+    if option_Unit is not None:
+        filtered_df = filtered_df[filtered_df["unit"] == int(option_Unit)]
+
+    filtered_df = filtered_df.groupby(["week"])["week"].count()
+    dictNum = filtered_df.to_dict()
+
+    try:
+        start = next(iter(dictNum))
+        if option_Year == "2026":
+            end = datetime.now().isocalendar().week
+        else:
+            end = 52
+
+        week = []
+        count = []
+        for i in range(start, end + 1):
+            week.append(i)
+            try:
+                count.append(dictNum[i])
+            except:
+                count.append(0)
+
+        data = {
+            "week": week,
+            "count": count
+        }
+
+        st.line_chart(data, x="week", y="count")
+    except:
+        st.write("No Data")
 

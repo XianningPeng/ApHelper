@@ -1,6 +1,6 @@
 import streamlit as st
 from supabase import create_client, Client
-from data import pieChart, accuracyByUnitChart, overallAccuracy
+from data import pieChart, accuracyByUnitChart, overallAccuracy, count
 from LLM import analyze
 import json
 import os
@@ -26,18 +26,26 @@ st.header(f"Overall Accuracy:  ***{overallAccuracy}***")
 
 col1, col2 = st.columns(2)
 
+# accuracy by unit
 with col1:
-    # accuracy by unit
     st.header(f"Accuracy by Unit")
     data = accuracyByUnitChart(userName + ".json")
     st.bar_chart(data, x="Unit", y="Accuracy", sort=False)
 
-with col2:
 # total number of finished questions by unit
+with col2:
     st.header(f"Number of Questions in each unit")
     df = pieChart(userName + ".json")
     st.bar_chart(df, x="Unit", y="Frequency", x_label="Frequency(how many times they showed up in your questions)",
                  sort=False, horizontal=True)
+
+st.divider()
+# number of questions finished by week
+count(userName+".json")
+
+st.divider()
+
+
 
 if 'aiOverview' in st.session_state:
     st.write(st.session_state.aiOverview)
@@ -49,6 +57,7 @@ if st.button("**Check  out an** $AI Overview$"):
     st.divider()
     st.write(st.session_state.aiOverview)
     st.divider()
+
 
 # check and download history
 on = st.toggle("See full history and download it")
