@@ -21,23 +21,15 @@ units = [
     "10. Infinite Sequences and Series"
 ]
 
-
-
-
-
-
-
-
+def importFile():
+    userName = st.session_state.userName
+    fileName = userName + ".json"
+    response = supabase.storage.from_("usersdata").download(fileName).decode('utf-8')
+    st.session_state.df = pd.read_json(response)
 
 def overallAccuracy (fileName):
 
-    #initialization
-    if "df" not in st.session_state:
-        userName = st.session_state.userName
-        fileName = userName + ".json"
-        response = supabase.storage.from_("usersdata").download(fileName).decode('utf-8')
-        st.session_state.df = pd.read_json(response)
-
+    importFile()
     df = st.session_state.df
     overallaccuracy = df["is_correct"].mean()
     return overallaccuracy
@@ -123,8 +115,6 @@ def count(fileName):
 
     df = st.session_state.df
 
-
-
     col1, col2 = st.columns(2)
 
     with col1:
@@ -182,7 +172,7 @@ def accuracyByTime():
 
     with col1:
         option_Year = st.selectbox(
-            " ",
+            "choose a year",
             ("2026", "2025"),
             placeholder="pick a year",
         )
