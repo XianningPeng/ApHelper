@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 from supabase import create_client, Client
 from datetime import datetime
+import io
 
 
 url: str = st.secrets["SUPABASE_URL"]
@@ -25,7 +26,7 @@ def importFile():
     userName = st.session_state.userName
     fileName = userName + ".json"
     response = supabase.storage.from_("usersdata").download(fileName).decode('utf-8')
-    st.session_state.df = pd.read_json(response)
+    st.session_state.df = pd.read_json(io.StringIO(response))       #stringIO make "response" a file-like object
 
 def overallAccuracy (fileName):
 

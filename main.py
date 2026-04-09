@@ -32,7 +32,7 @@ def main(userName, question, choiceA, choiceB, choiceC, choiceD, choiceE, correc
         "correct answer": correctAns.upper(),
         "user's answer": answer.upper(),
         "is_correct": is_correct,
-        "week": datetime.now().isocalender().week,
+        "week": datetime.now().isocalendar().week,
         "year": datetime.now().isocalendar().year,
         "time": datetime.now().isoformat()
     }
